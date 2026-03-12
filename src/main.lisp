@@ -4,7 +4,7 @@
 ;;;
 ;;; Copyright (C) 2026 Your Name
 
-(in-package #:cl-interceptor)
+(in-package #:interceptor)
 
 
 
@@ -133,8 +133,8 @@
   (bind ((sym/error (gensym "DATA"))
 	 ((:flet fn (function lambda-list input output))
 	  (when function
-	    `#'(lambda ,lambda-list
-		 (setf (values ,@output) (funcall #',function ,@input))))))
+	    (if (null output) `#'(lambda ,lambda-list (funcall #',function ,@input))
+		`#'(lambda ,lambda-list (setf (values ,@output) (funcall #',function ,@input)))))))
     (values (fn (interceptor-template-enter/list interceptor)
 		`(,sym) input output)
 	    (fn (interceptor-template-leave/list interceptor)
@@ -422,8 +422,6 @@
       (if executor-return
 	  (funcall executor-return executor-data)
 	  executor-data))))
-
-
 
 
 
