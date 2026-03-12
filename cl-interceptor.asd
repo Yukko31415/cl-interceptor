@@ -1,0 +1,15 @@
+;;; cl-interseptor.asd
+;;;
+;;; SPDX-License-Identifier: MIT
+;;;
+;;; Copyright (C) 2026 Your Name
+
+(asdf:defsystem #:cl-interceptor
+  :description "A basic application."
+  :author      "Your Name"
+  :license     "MIT"
+  :version     "0.1.0"
+  :depends-on  ("metabang-bind" "alexandria")
+  :serial t
+  :components ((:file "src/package")
+               (:file "src/main")))
