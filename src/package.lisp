@@ -4,9 +4,14 @@
 ;;;
 ;;; Copyright (C) 2026 Your Name
 
-(defpackage #:cl-interceptor
+(defpackage #:interceptor
   (:use #:cl)
   (:import-from #:bind #:bind)
+  (:export #:define-interceptor
+	   #:push-interceptor
+	   #:pop-interceptor
+	   #:define-executor
+	   #:execute)
   (:documentation "the cl-interceptor package."))
 
-(in-package #:cl-interceptor)
+(in-package #:interceptor)
