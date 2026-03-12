@@ -6,7 +6,7 @@
 
 (asdf:defsystem #:cl-interceptor
   :description "A basic application."
-  :author      "Your Name"
+  :author      "Yukko"
   :license     "MIT"
   :version     "0.1.0"
   :depends-on  ("metabang-bind" "alexandria")
