@@ -133,8 +133,10 @@
   (bind ((sym/error (gensym "DATA"))
 	 ((:flet fn (function lambda-list input output))
 	  (when function
-	    (if (null output) `#'(lambda ,lambda-list (funcall #',function ,@input))
-		`#'(lambda ,lambda-list (setf (values ,@output) (funcall #',function ,@input)))))))
+	    (cond
+	      ((null output) `#'(lambda ,lambda-list (funcall #',function ,@input)))
+	      ((= 1 (length output)) `#'(lambda ,lambda-list (setf ,@output (funcall #',function ,@input))))
+	      (t `#'(lambda ,lambda-list (setf (values ,@output) (funcall #',function ,@input))))))))
     (values (fn (interceptor-template-enter/list interceptor)
 		`(,sym) input output)
 	    (fn (interceptor-template-leave/list interceptor)
@@ -295,6 +297,7 @@
 ;;;; ---------------
 ;;;; pop-interceptor
 ;;;; ---------------
+
 
 (define-condition pop-interceptor (condition) ())
 
