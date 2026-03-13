@@ -57,7 +57,7 @@
 (define-interceptor dynamic-injector (a)
   (:enter 
     ;; 実行中に別のインターセプタを注入
-    (push-interceptor 'another-interceptor '(a) '(a))
+    (push-interceptor 'another-interceptor '(a) '(a)) ; input, output のシンボルは contexts と一致していなければなりません。
     ;; 次の予定をキャンセル
     (pop-interceptor)))
 
