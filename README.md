@@ -65,7 +65,7 @@
 
 ### 5. エラーハンドリング
 
-`interceptor-error` が発生すると、スタックを遡りながら各インターセプタの `:error` フェーズが順次実行されます。遡及中にさらにエラーが発生した場合も、再帰的に解決を試みます。
+`interceptor-error` あるいは `interceptor-condition` が発生すると、スタックを遡りながら各インターセプタの `:error` フェーズが順次実行されます。遡及中にさらにエラーが発生した場合も、再帰的に解決を試みます。 `interceptor-error` は `:error` フェーズ中に解決されなかった場合、 `error` を発生させます。
 
 
 ## Author and License
