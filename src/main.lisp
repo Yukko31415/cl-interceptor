@@ -50,27 +50,36 @@
     (values `#'(lambda ,lambda-list (declare (ignorable ,@c)) ,@list)
 	    `'(lambda ,lambda-list (declare (ignorable ,@c)) ,@list))))
 
-
 (defun make-action (lambda-list list)
   (ecase (pop list)
     (:enter (bind (((:values fn fnlist) (%make-action lambda-list list)))
-	      (list `(enter :initform ,fn) `(enter/list :initform ,fnlist))))
+	      (list `(enter :initform ,fn) `(:enter ,fnlist))))
     (:leave (bind (((:values fn fnlist) (%make-action lambda-list list)))
-	      (list `(leave :initform ,fn) `(leave/list :initform ,fnlist))))
+	      (list `(leave :initform ,fn) `(:leave ,fnlist))))
     (:error (bind (((:values fn fnlist) (%make-action/error lambda-list list)))
-	      (list `(error :initform ,fn) `(error/list :initform ,fnlist))))))
+	      (list `(error :initform ,fn) `(:error ,fnlist))))))
+
+(defun make-template (lambda-list actions)
+  (loop :for act :in actions
+	:for (fn list) := (make-action lambda-list act)
+	:collect fn :into fns
+	:append list :into lists
+	:finally (return (values fns lists))))
 
 ;;
 ;; define-interceptor
 
 (defmacro define-interceptor (name lambda-list &rest actions)
-  (let* ((actions (loop :for act :in actions
-			:append (make-action lambda-list act))))
-    `(defclass ,name (interceptor-template)
-       ((name :initform ',name)
-	(lambda-list :initform ',lambda-list)
-	(lambda-list-length :initform ,(length lambda-list))
-	,@actions))))
+  (bind (((:values fns lists) (make-template lambda-list actions)))
+    `(progn (defclass ,name (interceptor-template)
+	      ((name :initform ',name)
+	       (lambda-list :initform ',lambda-list)
+	       (lambda-list-length :initform ,(length lambda-list))
+	       ,@fns))
+	    (defmethod make-interceptor-template.internal ((name (eql ',name)))
+	      (make-instance 'interceptor-template.internal
+			     :name ',name ,@lists)))))
+
 
 
 
