@@ -8,7 +8,7 @@
   :description "A basic application."
   :author      "Yukko"
   :license     "MIT"
-  :version     "0.1.0"
+  :version     "0.2.0"
   :depends-on  ("metabang-bind" "alexandria")
   :serial t
   :components ((:file "src/package")
