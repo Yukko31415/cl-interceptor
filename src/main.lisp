@@ -19,12 +19,24 @@
    (lambda-list :reader interceptor-lambda-list)
    (lambda-list-length :reader interceptor-lambda-list-length)
    (enter :reader interceptor-template-enter :initform nil)
-   (enter/list :reader interceptor-template-enter/list :initform nil)
    (leave :reader interceptor-template-leave :initform nil)
-   (leave/list :reader interceptor-template-leave/list :initform nil)
-   (error :reader interceptor-template-error :initform nil)
-   (error/list :reader interceptor-template-error/list :initform nil)))
+   (error :reader interceptor-template-error :initform nil)))
 
+(defclass interceptor-template.internal ()
+  ((name :initarg :name :reader interceptor-name)
+   (enter :initarg :enter :reader interceptor-template-enter :initform nil)
+   (leave :initarg :leave :reader interceptor-template-leave :initform nil)
+   (error :initarg :error :reader interceptor-template-error :initform nil)))
+
+
+;;
+;; make-interceptor-template.internal
+
+(defgeneric make-interceptor-template.internal (name))
+
+
+;;
+;; make-template
 
 (defun %make-action (lambda-list list)
   (values `#'(lambda ,lambda-list ,@list) `'(lambda ,lambda-list ,@list)))
