@@ -152,18 +152,16 @@
 
 (defun %%make-definition (interceptor input output sym)
   (bind ((sym/error (gensym "DATA"))
+	 ((:values enter leave error) (get-interceptor-functions interceptor))
 	 ((:flet fn (function lambda-list input output))
 	  (when function
 	    (cond
 	      ((null output) `#'(lambda ,lambda-list (funcall #',function ,@input)))
 	      ((= 1 (length output)) `#'(lambda ,lambda-list (setf ,@output (funcall #',function ,@input))))
 	      (t `#'(lambda ,lambda-list (setf (values ,@output) (funcall #',function ,@input))))))))
-    (values (fn (interceptor-template-enter/list interceptor)
-		`(,sym) input output)
-	    (fn (interceptor-template-leave/list interceptor)
-		`(,sym) input output)
-	    (fn (interceptor-template-error/list interceptor)
-		`(,sym/error ,sym) `(,sym/error ,@input) output))))
+    (values (fn enter `(,sym) input output)
+	    (fn leave `(,sym) input output)
+	    (fn error `(,sym/error ,sym) `(,sym/error ,@input) output))))
 
 (defun %make-definition (interceptor input output contexts &optional alias)
   (bind ((sym (gensym "DATA"))
@@ -176,13 +174,13 @@
 
 (defun make-definition (definition contexts)
   (bind (((interceptor input output) definition)
-	 (interceptor (make-instance interceptor))
+	 (interceptor (make-interceptor-template.internal interceptor))
 	 (definition (%make-definition interceptor input output contexts)))
     definition))
 
 (defun make-definition/with-alias (definition contexts)
   (bind (((alias interceptor input output) definition)
-	 (interceptor (make-instance interceptor))
+	 (interceptor (make-interceptor-template.internal interceptor))
 	 (definition (%make-definition interceptor input output contexts alias)))
     definition))
 
