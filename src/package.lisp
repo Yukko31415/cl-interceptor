@@ -7,11 +7,11 @@
 (defpackage #:interceptor
   (:use #:cl)
   (:import-from #:bind #:bind)
-  (:export #:define-interceptor
-	   #:push-interceptor
+  (:export #:define-executor
+	   #:define-interceptor
+	   #:execute
 	   #:pop-interceptor
-	   #:define-executor
-	   #:execute)
+	   #:push-interceptor)
   (:documentation "the cl-interceptor package."))
 
 (in-package #:interceptor)
