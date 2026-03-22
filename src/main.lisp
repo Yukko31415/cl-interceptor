@@ -312,10 +312,11 @@
   ((interceptor :initarg :interceptor :reader interceptor)))
 
 (defun push-interceptor (interceptor-name input output)
+  "push-interceptor interceptor-name input output => <no value>"
   (restart-case
       (signal 'push-interceptor
 	      :interceptor (make-injectable-interceptor interceptor-name input output))
-    (return () nil)))
+    (return () (values))))
 
 
 
@@ -329,8 +330,9 @@
 (define-condition pop-interceptor (condition) ())
 
 (defun pop-interceptor ()
+   "pop-interceptor => <no values>"
   (restart-case (signal 'pop-interceptor)
-    (return () nil)))
+    (return () (values))))
 
 
 
