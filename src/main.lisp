@@ -70,6 +70,9 @@
 ;; define-interceptor
 
 (defmacro define-interceptor (name lambda-list &rest actions)
+  "define-interceptor name lambda-list [[{!action}*]]
+   action ::= (:enter form) | (:leave from) | (:error (condition) form)
+   condition = a non nil symbol."
   (bind (((:values fns lists) (make-template lambda-list actions)))
     `(progn (defclass ,name (interceptor-template)
 	      ((name :initform ',name)
@@ -211,6 +214,11 @@
 
 (defmacro define-executor (name (contexts &rest definitions)
 		    (actions &key (return nil returnp)))
+  "define-executor name (({context}*) {!definition}*) (({action}*) [return-form])
+   definition ::= (interceptor-name input output) | (alias interceptor-name input output)
+   return-form ::= {:return form}
+   context = a symbol.
+   action = a symbol."
   (bind (((:values contexts initial-contents) (make-contexts contexts))
 	 (definitions (make-definitions definitions contexts))
 	 (contexts-ht (make-contexts-ht contexts))
@@ -436,6 +444,7 @@
 
 
 (defun execute (executor-name &rest initvalues)
+   "execute executor-name &rest initvalues => executor-return"
   (let ((executor (make-executor executor-name)))
     (progn (initialize-executor-data executor initvalues)
 	   (execute-enter executor)
